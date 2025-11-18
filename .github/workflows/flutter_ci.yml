@@ -34,8 +34,12 @@ jobs:
       - name: Build unsigned release APK
         run: flutter build apk --release
 
-      - name: Upload APK artifacts
-        uses: actions/upload-artifact@v3
+
+        - name: Upload APK artifacts
+        uses: github/upload-artifact@v1
         with:
-          name: ci_cd_app_builds
-          path: build/app/outputs/flutter-apk/*.apk
+        name: ci_cd_app_builds
+        path: build/app/outputs/flutter-apk/*.apk
+
+
+     
