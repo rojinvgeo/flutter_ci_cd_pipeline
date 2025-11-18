@@ -1,5 +1,6 @@
-name: Flutter CI Pipeline
+name: Flutter CI Pipeline - Internal Testing
 
+# Trigger workflow on push to master branch or PRs
 on:
   push:
     branches:
@@ -11,35 +12,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      # Step 1: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Flutter
+      # Step 2: Setup Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
+      # Step 3: Install dependencies
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Run analyzer
+      # Step 4: Analyze code
+      - name: Flutter analyze
         run: flutter analyze
 
-      - name: Run tests (if any)
+      # Step 5: Run tests
+      - name: Flutter test
         run: flutter test
 
+      # Step 6: Build debug APK
       - name: Build debug APK
         run: flutter build apk --debug
 
-      - name: Build unsigned release APK
+      # Step 7: Build release APK (unsigned)
+      - name: Build release APK (unsigned)
         run: flutter build apk --release
 
-
-        - name: Upload APK artifacts
+      # Step 8: Upload APK artifacts
+      - name: Upload APK artifacts
         uses: github/upload-artifact@v1
         with:
-        name: ci_cd_app_builds
-        path: build/app/outputs/flutter-apk/*.apk
-
-
-     
+          name: ci_cd_app_builds
+          path: build/app/outputs/flutter-apk/*.apk
