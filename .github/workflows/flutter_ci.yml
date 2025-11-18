@@ -1,0 +1,41 @@
+name: Flutter CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Run analyzer
+        run: flutter analyze
+
+      - name: Run tests (if any)
+        run: flutter test
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Build unsigned release APK
+        run: flutter build apk --release
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ci_cd_app_builds
+          path: build/app/outputs/flutter-apk/*.apk
